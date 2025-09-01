@@ -251,10 +251,10 @@ class Checker {
             error_log("Comparing: phone={$phone}|{$order_phone}, email={$email}|{$order_email}, ip={$ip}|{$order_ip}, device={$device_id}|{$order_device}");
 
             if (
-                ($phone && $order_phone && $phone === $order_phone) //||
-                // ($email && $order_email && $email === $order_email)  ||
-                // ($ip    && $order_ip    && $ip    === $order_ip) ||
-                // ($device_id && $order_device && $device_id === $order_device)
+                ($phone && $order_phone && $phone === $order_phone) ||
+                ($email && $order_email && $email === $order_email)  ||
+                ($ip    && $order_ip    && $ip    === $order_ip) ||
+                ($device_id && $order_device && $device_id === $order_device)
             ) {
                 return true;
             }
