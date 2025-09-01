@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Order Shield Pro
  * Description: Blocks multiple WooCommerce orders from the same device, IP, or phone number until previous orders are completed. Includes customizable popup alerts, CartFlows support, and an admin settings panel.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: MD.Ridwan
  * Author URI: https://dev-mdridwan.pantheonsite.io/
  * Plugin URI: https://dev-mdridwan.pantheonsite.io/
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 
 // Define plugin version constant
 
-define('RS_ORDER_SHIELD_PRO_VERSION',  "1.0.4");
+define('RS_ORDER_SHIELD_PRO_VERSION',  "1.0.5");
 
 // Load core plugin class
 require_once plugin_dir_path(__FILE__) . 'includes/class-plugin.php';
