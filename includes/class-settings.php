@@ -1,27 +1,30 @@
 <?php
+/**
+ * This file adds settings page and settings fields for the Order Shield Pro plugin.
+ *
+ * @package OrderShieldPro
+ */
 
 namespace RS\OrderBlocker;
 
-require_once plugin_dir_path( __FILE__ ) . 'admin/class-failed-orders-table.php';
-
-require_once plugin_dir_path( __FILE__ ) . 'admin/class-failed-orders-page.php';
-
-require_once plugin_dir_path( __FILE__ ) . 'admin/class-fraud-analytics-page.php';
-
 use RS\OrderBlocker\Admin\FailedOrdersPage;
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Class Settings
+ *
+ * Manages the plugin settings page and fields.
+ */
 class Settings {
 
 	private $option_group = 'rs_order_blocker_settings_group';
 	private $option_name  = 'rs_order_blocker_settings';
 	private $default_opts = array();
 
-	public function __construct() {
+	public function init() {
 		// Default settings
 		$this->default_opts = array(
 			'enable_blocking'           => 1,
@@ -47,7 +50,6 @@ class Settings {
 			'popup_margin'              => '10',
 			'popup_box_shadow'          => '2px 2px 6px #131313ff',
 			'invalid_phone_alert'       => 'দুঃখিত, আপনি একটি ভুল নাম্বার লিখেছেন। দয়া করে ১১ ডিজিটের সঠিক নাম্বারটি লিখুন:',
-			'show_abandon_popup'        => 0,
 			'abandon_popup_message'     => 'Wait! Don’t leave — here’s a special offer!',
 			'abandon_popup_coupon'      => 'SAVE10',
 			'abandon_popup_logo'        => '',
@@ -101,8 +103,8 @@ class Settings {
 			function () {
 				if (
 				isset( $_GET['page'], $_GET['action'] ) &&
-				$_GET['page'] === 'rs-fraud-analytics' &&
-				$_GET['action'] === 'export_product_risk'
+				'rs-fraud-analytics' === $_GET['page'] &&
+				'export_product_risk' === $_GET['action']
 				) {
 					// ✅ Load the class manually BEFORE calling it
 					require_once plugin_dir_path( __FILE__ ) . '/admin/class-product-risk-list-table.php';
@@ -270,16 +272,6 @@ class Settings {
 		</style>
 		<?php
 	}
-
-
-
-
-
-
-
-
-
-
 
 
 

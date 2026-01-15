@@ -59,16 +59,6 @@ class Checker {
 
 
 
-
-
-
-
-
-
-
-
-
-
 	/* -------------------- SETTINGS & NORMALIZERS -------------------- */
 
 	private function get_settings() {

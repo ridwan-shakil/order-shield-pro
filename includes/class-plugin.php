@@ -6,18 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Load core
-foreach (
-	array(
-		'class-settings.php',
-		'class-checker.php',
-		'class-assets.php',
-		'class-incomplete-orders-tracker.php',
-		'class-blocked-users.php',
-	) as $f
-) {
-	include plugin_dir_path( __FILE__ ) . $f;
-}
+
 
 // Export failed orders data in CSV format
 add_action( 'admin_init', array( 'RS\\OrderBlocker\\Admin\\FailedOrdersPage', 'maybe_export_csv' ) );
