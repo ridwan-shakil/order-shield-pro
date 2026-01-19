@@ -62,6 +62,8 @@ final class Plugin {
 		$loader = new \RS\OrderBlocker\Settings();
 		$loader->init();
 		// new \RS\OrderBlocker\Plugin();
+		// $wlmapi = new \RS\OrderBlocker\Core\WLMAPI();
+		// $wlmapi->init();
 	}
 
 	/**

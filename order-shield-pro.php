@@ -27,6 +27,7 @@ define( 'RSOSP_DIR_FILE', __FILE__ );
 // Load core plugin class.
 require_once RSOSP_DIR_PATH . 'includes/core/class-activation.php';
 require_once RSOSP_DIR_PATH . 'includes/core/class-plugin.php';
+// require_once RSOSP_DIR_PATH . 'includes/core/class-wlmapi.php';
 require_once RSOSP_DIR_PATH . 'includes/class-settings.php';
 require_once RSOSP_DIR_PATH . 'includes/class-plugin.php'; //license class
 require_once RSOSP_DIR_PATH . 'includes/class-checker.php';
