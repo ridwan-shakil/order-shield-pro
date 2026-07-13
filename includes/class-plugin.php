@@ -9,6 +9,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Load the DLM PHP SDK manually
+require_once plugin_dir_path( __FILE__ ) . '../dlm-php/autoload.php';
+
 // Load core
 foreach (
 	array(
@@ -36,8 +39,8 @@ final class Plugin {
 		if ( class_exists( 'IdeoLogix\\DigitalLicenseManagerClient\\Service' ) ) {
 			$this->dlm_api = new Service(
 				'https://dev-mdridwan.pantheonsite.io', // Your DLM Server URL
-				'ck_f052ac22415d8bee26c3ac563fdb32b147df7c47', // Consumer Key
-				'cs_6975d1fe585719688a62303740e55967b98d4ca1'  // Consumer Secret
+				'ck_24ff5b2a95ea5ebe745ee12ef9427fc019c9b095', // Consumer Key
+				'cs_82b23d4ad9acc7550ab7af72fb0d310c6f9a2777'  // Consumer Secret
 			);
 		}
 
@@ -59,7 +62,7 @@ final class Plugin {
 		}
 	}
 
-	function block_default_admin_notices() {
+	public function block_default_admin_notices() {
 		$screen = get_current_screen();
 		if ( ! $screen ) {
 			return;

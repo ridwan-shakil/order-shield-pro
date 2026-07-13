@@ -230,7 +230,7 @@ class FailedOrdersPage {
             </div>
             <div class="rs-ob-box status-revenue">
                 <h3><?php esc_html_e('Potential Sales Missed', 'wcorder-blocker'); ?></h3>
-                <p><?php echo wc_price($revenue); ?></p>
+                <p><?php //echo wc_price($revenue); ?></p>
             </div>
             <div class="rs-ob-box status-cart">
                 <h3><?php esc_html_e('Cart Abandons', 'wcorder-blocker'); ?></h3>
