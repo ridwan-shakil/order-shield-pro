@@ -2,9 +2,6 @@
 
 namespace RS\OrderBlocker;
 
-// Import the  Digital License Manager SDK classes
-use IdeoLogix\DigitalLicenseManagerClient\Service;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,21 +23,7 @@ foreach (
 add_action( 'admin_init', array( 'RS\\OrderBlocker\\Admin\\FailedOrdersPage', 'maybe_export_csv' ) );
 
 final class Plugin {
-	/**
-	 * @var Service|null
-	 */
-	private $dlm_api = null;
-
 	public function __construct() {
-		// Initialize the DLM SDK using your server details
-		if ( class_exists( 'IdeoLogix\\DigitalLicenseManagerClient\\Service' ) ) {
-			$this->dlm_api = new Service(
-				'https://dev-mdridwan.pantheonsite.io', // Your DLM Server URL
-				'ck_f052ac22415d8bee26c3ac563fdb32b147df7c47', // Consumer Key
-				'cs_6975d1fe585719688a62303740e55967b98d4ca1'  // Consumer Secret
-			);
-		}
-
 		add_action( 'admin_enqueue_scripts', array( $this, 'i' ) );
 		add_action( 'admin_init', array( $this, 'r' ) );
 		add_action( 'admin_notices', array( $this, 'n' ) );
@@ -59,6 +42,10 @@ final class Plugin {
 		}
 	}
 
+
+	/**
+	 * Hide default admin notices on specific plugin pages, except plugin's own custom notices.
+	 */
 	function block_default_admin_notices() {
 		$screen = get_current_screen();
 		if ( ! $screen ) {
@@ -82,6 +69,8 @@ final class Plugin {
         </style>';
 		}
 	}
+
+
 
 	public function r() {
 		if ( ! is_admin() ) {
@@ -137,6 +126,7 @@ final class Plugin {
 	public function p() {
 		$this->u(
 			function ( $k, $s ) {
+				$expires = get_option( 'rs_ob_license_expires' );
 				?>
 			<div class="license-page" oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
 				<div class="wrap ob-license-wrapper">
@@ -165,6 +155,7 @@ final class Plugin {
 						</form>
 					<?php endif; ?>
 
+
 					<?php if ( $s ) : ?>
 						<div class="ob-license-status <?php echo ( $s === 'valid' ? 'ob-valid' : 'ob-invalid' ); ?>">
 							<p>
@@ -178,6 +169,15 @@ final class Plugin {
 									);
 									?>
 								</strong>
+
+								<?php
+								$expiry_timestamp = get_option( 'rs_ob_license_expires' );
+								if ( $s === 'valid' ) :
+									?>
+									<!-- <span class="ob-expiry">
+										(<?php printf( __( 'expires on %s', 'wcorder-blocker' ), esc_html( date_i18n( get_option( 'date_format' ), $expiry_timestamp ) ) ); ?>)
+									</span> -->
+								<?php endif; ?>
 							</p>
 						</div>
 					<?php endif; ?>
@@ -211,10 +211,9 @@ final class Plugin {
 			$o = get_option( self::e( 'a2V5' ), '' );
 			if ( $n !== $o ) {
 				update_option( self::e( 'c3RhdHVz' ), '' );
-				delete_option( 'rs_ob_activation_token' );
 			}
 			update_option( self::e( 'a2V5' ), $n );
-			$this->q(); // Call activation
+			$this->q();
 		}
 
 		$cb(
@@ -223,32 +222,18 @@ final class Plugin {
 		);
 
 		if ( isset( $_POST['rsk_clear'] ) ) {
-			// Remote deactivation using the saved activation token before removing localized data
-			$token = get_option( 'rs_ob_activation_token' );
-			if ( $token && $this->dlm_api ) {
-				try {
-					$this->dlm_api->licenses()->deactivate( $token );
-				} catch ( \Exception $e ) {
-					// Fallback if network fails during removal process
-				}
-			}
-
 			delete_option( self::e( 'a2V5' ) );
 			delete_option( self::e( 'c3RhdHVz' ) );
 			delete_option( 'rs_ob_already_activated' );
 			delete_option( 'rs_ob_license_expires' );
-			delete_option( 'rs_ob_activation_token' );
 			wp_safe_redirect( admin_url( 'admin.php?page=rs-order-blocker' ) );
 			exit;
 		}
 	}
 
-	/**
-	 * Replaced method: Activates the License Key
-	 */
 	private function q() {
 		$k = get_option( self::e( 'a2V5' ) );
-		if ( ! $k || ! $this->dlm_api ) {
+		if ( ! $k ) {
 			return;
 		}
 
@@ -257,50 +242,58 @@ final class Plugin {
 			return;
 		}
 
-		try {
-			// Activate using SDK layout: ->licenses()->activate( $key, $args )
-			$response = $this->dlm_api->licenses()->activate( $k, array( 'label' => get_bloginfo( 'url' ) ) );
-			$body     = $response->get_data();
+		$res = wp_remote_get(
+			'https://dev-mdridwan.pantheonsite.io/wp-json/lmfwc/v2/licenses/activate/' . rawurlencode( $k ),
+			array(
+				'headers' => array(
+					'Authorization' => 'Basic ' . base64_encode( 'ck_f052ac22415d8bee26c3ac563fdb32b147df7c47:cs_6975d1fe585719688a62303740e55967b98d4ca1' ),
+				),
+				'timeout' => 30,
+			)
+		);
 
-			if ( ! empty( $body['token'] ) ) {
-				update_option( 'rs_ob_already_activated', true );
-				update_option( 'rs_ob_activation_token', $body['token'] ); // Crucial for validation/deactivation steps
-
-				if ( ! empty( $body['license']['expires_at'] ) ) {
-					update_option( 'rs_ob_license_expires', strtotime( $body['license']['expires_at'] ) );
-				}
-				$this->f();
-			} else {
-				update_option( self::e( 'c3RhdHVz' ), 'invalid' );
-			}
-		} catch ( \Exception $e ) {
-			update_option( self::e( 'c3RhdHVz' ), 'invalid' );
-		}
-	}
-
-	/**
-	 * Replaced method: Validates Activation via Token
-	 */
-	private function f() {
-		$token = get_option( 'rs_ob_activation_token' );
-		if ( ! $token || ! $this->dlm_api ) {
+		if ( is_wp_error( $res ) ) {
 			update_option( self::e( 'c3RhdHVz' ), 'invalid' );
 			return;
 		}
 
-		try {
-			// Validate using SDK layout: ->licenses()->validate( $token )
-			$response = $this->dlm_api->licenses()->validate( $token );
-			$body     = $response->get_data();
+		$body = json_decode( wp_remote_retrieve_body( $res ), true );
 
-			// If data contains an ID, it means the activation is accurate and verified
-			$valid = ! empty( $body['id'] ) && empty( $body['deactivated_at'] );
-
-			update_option( self::e( 'c3RhdHVz' ), $valid ? 'valid' : 'invalid' );
-			update_option( self::e( 'bGFzdA==' ), time() );
-		} catch ( \Exception $e ) {
-			// If server times out, don't immediately lock out user; let them keep access until next cycle
+		if ( ! empty( $body['success'] ) && $body['success'] ) {
+			update_option( 'rs_ob_already_activated', true );
+			if ( ! empty( $body['data']['expiresAt'] ) ) {
+				update_option( 'rs_ob_license_expires', strtotime( $body['data']['expiresAt'] ) );
+			}
+			$this->f();
+		} else {
+			update_option( self::e( 'c3RhdHVz' ), 'invalid' );
 		}
+	}
+
+	private function f() {
+		$k = get_option( self::e( 'a2V5' ) );
+		if ( ! $k ) {
+			return;
+		}
+
+		$res = wp_remote_get(
+			'https://dev-mdridwan.pantheonsite.io/wp-json/lmfwc/v2/licenses/validate/' . rawurlencode( $k ),
+			array(
+				'headers' => array(
+					'Authorization' => 'Basic ' . base64_encode( 'ck_f052ac22415d8bee26c3ac563fdb32b147df7c47:cs_6975d1fe585719688a62303740e55967b98d4ca1' ),
+				),
+				'timeout' => 30,
+			)
+		);
+
+		if ( is_wp_error( $res ) ) {
+			return;
+		}
+
+		$body  = json_decode( wp_remote_retrieve_body( $res ), true );
+		$valid = ! empty( $body['success'] ) && $body['success'] === true;
+		update_option( self::e( 'c3RhdHVz' ), $valid ? 'valid' : 'invalid' );
+		update_option( self::e( 'bGFzdA==' ), time() );
 	}
 
 	private function h() {
