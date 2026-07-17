@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Order Shield Pro
+ * Plugin Name: Ninja Fake Order Blocker
  * Description: Blocks multiple WooCommerce orders from the same device, IP, or phone number until previous orders are completed. Includes customizable popup alerts, CartFlows support, and an admin settings panel.
  * Version: 1.0.5
  * Author: MD.Ridwan
