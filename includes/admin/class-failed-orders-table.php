@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker\Admin;
+namespace NinjaFakeOrder\Admin;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -24,7 +24,7 @@ class FailedOrdersTable extends \WP_List_Table {
 
     public function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+        $this->table = $wpdb->prefix . 'nfob_incomplete_orders';
 
         parent::__construct([
             'singular' => 'failed_order',
@@ -39,14 +39,14 @@ class FailedOrdersTable extends \WP_List_Table {
     public function get_columns() {
         return [
             'cb'             => '<input type="checkbox" />',
-            'id'             => __('Order ID', 'wcorder-blocker'),
-            'status'         => __('Status', 'wcorder-blocker'),
-            'customer_name'  => __('Name', 'wcorder-blocker'),
-            'mobile'         => __('Phone', 'wcorder-blocker'),
-            'email'          => __('Email', 'wcorder-blocker'),
-            'cart_contents'  => __('Product info', 'wcorder-blocker'),
-            'total'          => __('Cart Total', 'wcorder-blocker'),
-            'created_at'     => __('Last Visited', 'wcorder-blocker'),
+            'id'             => __('Order ID', 'ninja-fake-order-blocker'),
+            'status'         => __('Status', 'ninja-fake-order-blocker'),
+            'customer_name'  => __('Name', 'ninja-fake-order-blocker'),
+            'mobile'         => __('Phone', 'ninja-fake-order-blocker'),
+            'email'          => __('Email', 'ninja-fake-order-blocker'),
+            'cart_contents'  => __('Product info', 'ninja-fake-order-blocker'),
+            'total'          => __('Cart Total', 'ninja-fake-order-blocker'),
+            'created_at'     => __('Last Visited', 'ninja-fake-order-blocker'),
         ];
     }
 
@@ -69,7 +69,7 @@ class FailedOrdersTable extends \WP_List_Table {
      */
     public function get_bulk_actions() {
         return [
-            'delete'           => __('Delete', 'wcorder-blocker'),
+            'delete'           => __('Delete', 'ninja-fake-order-blocker'),
 
         ];
     }
@@ -229,7 +229,7 @@ class FailedOrdersTable extends \WP_List_Table {
             '<a href="%s" class="rs-delete-link" data-id="%d" style="color:red">%s</a>',
             esc_url($delete_url),
             absint($item->id),
-            esc_html__('Delete', 'wcorder-blocker')
+            esc_html__('Delete', 'ninja-fake-order-blocker')
         );
 
         $actions = [
@@ -275,10 +275,10 @@ class FailedOrdersTable extends \WP_List_Table {
 ?>
         <div class="alignleft actions">
             <select name="status_filter">
-                <option value=""><?php esc_html_e('All Statuses', 'wcorder-blocker'); ?></option>
-                <option value="cart" <?php selected($status, 'cart'); ?>><?php esc_html_e('Cart', 'wcorder-blocker'); ?></option>
-                <option value="checkout" <?php selected($status, 'checkout'); ?>><?php esc_html_e('Checkout', 'wcorder-blocker'); ?></option>
-                <option value="payment_failed" <?php selected($status, 'payment_failed'); ?>> <?php esc_html_e('Payment Failed', 'wcorder-blocker'); ?></option>
+                <option value=""><?php esc_html_e('All Statuses', 'ninja-fake-order-blocker'); ?></option>
+                <option value="cart" <?php selected($status, 'cart'); ?>><?php esc_html_e('Cart', 'ninja-fake-order-blocker'); ?></option>
+                <option value="checkout" <?php selected($status, 'checkout'); ?>><?php esc_html_e('Checkout', 'ninja-fake-order-blocker'); ?></option>
+                <option value="payment_failed" <?php selected($status, 'payment_failed'); ?>> <?php esc_html_e('Payment Failed', 'ninja-fake-order-blocker'); ?></option>
             </select>
 
             <input type="text" id="product_filter" name="product_filter" value="<?php echo esc_attr($product); ?>" placeholder="Product name or ID" />
@@ -307,7 +307,7 @@ class FailedOrdersTable extends \WP_List_Table {
             $quantity   = $cart_item['quantity'] ?? 0;
 
             $product = wc_get_product($product_id);
-            $product_name = $product ? $product->get_name() : esc_html__('(Product not found)', 'wcorder-blocker');
+            $product_name = $product ? $product->get_name() : esc_html__('(Product not found)', 'ninja-fake-order-blocker');
 
             $output[] = sprintf('%d × %s (ID: %d)', $quantity, esc_html($product_name), $product_id);
         }

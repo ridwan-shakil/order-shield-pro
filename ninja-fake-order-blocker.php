@@ -7,35 +7,48 @@
  * Author: MD.Ridwan
  * Author URI: https://dev-mdridwan.pantheonsite.io/
  * Plugin URI: https://dev-mdridwan.pantheonsite.io/
- * Text Domain: wcorder-blocker
+ * Text Domain: ninja-fake-order-blocker
  * Domain Path: /languages
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-// namespace RS\OrderBlocker;
+// namespace NinjaFakeOrder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-// Define plugin version constant
+// Define plugin constants
+define( 'NFOB_PLUGIN_VERSION', '1.0.5' );
+define( 'NFOB_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'NFOB_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'NFOB_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'NFOB_PLUGIN_FILE', __FILE__ );
 
-define( 'RS_ORDER_SHIELD_PRO_VERSION', '1.0.5' );
 
 // Load core plugin class
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-plugin.php';
 
-// Load the DLM PHP SDK manually
-require_once plugin_dir_path( __FILE__ ) . 'dlm-php/autoload.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-settings.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-checker.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-assets.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-incomplete-orders-tracker.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-blocked-users.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-admin-setup.php';
+
+// load admin classes
+require_once NFOB_PLUGIN_DIR . 'includes/admin/class-failed-orders-table.php';
+require_once NFOB_PLUGIN_DIR . 'includes/admin/class-failed-orders-page.php';
+
 
 
 // Add "Settings" link to plugin action links
 add_filter(
-	'plugin_action_links_' . plugin_basename( __FILE__ ),
+	'plugin_action_links_' . NFOB_PLUGIN_BASENAME,
 	function ( $links ) {
 		$settings_url  = admin_url( 'admin.php?page=rs-order-blocker' );
-		$settings_link = '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'wcorder-blocker' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( $settings_url ) . '">' . esc_html__( 'Settings', 'ninja-fake-order-blocker' ) . '</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -49,7 +62,7 @@ register_activation_hook(
 	__FILE__,
 	function () {
 		$option_name  = 'rs_order_blocker_settings';
-		$default_opts = ( new \RS\OrderBlocker\Settings() )->get_default_options();
+		$default_opts = ( new \NinjaFakeOrder\Settings() )->get_default_options();
 
 		if ( ! get_option( $option_name ) ) {
 			add_option( $option_name, $default_opts );
@@ -68,7 +81,7 @@ register_activation_hook(
 	function () {
 		global $wpdb;
 
-		$table_name      = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+		$table_name      = $wpdb->prefix . 'nfob_incomplete_orders';
 		$charset_collate = $wpdb->get_charset_collate();
 
 		$sql = "CREATE TABLE {$table_name} (
@@ -92,26 +105,6 @@ register_activation_hook(
 		dbDelta( $sql );
 	}
 );
-
-
-/**
- * Plugin Update Checker
- * This will check for updates from the specified GitHub repository.
- * Note: This requires the plugin-update-checker library to be included.
- */
-require 'plugin-update-checker/plugin-update-checker.php';
-
-use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
-
-$myUpdateChecker = PucFactory::buildUpdateChecker(
-	'https://github.com/ridwan-shakil/order-shield-pro',
-	__FILE__,
-	'order-shield-pro'
-);
-
-//Set the branch that contains the stable release.
-$myUpdateChecker->setBranch( 'main' );
-
 
 
 

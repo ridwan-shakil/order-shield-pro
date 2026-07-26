@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker\Admin;
+namespace NinjaFakeOrder\Admin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -18,12 +18,12 @@ class FailedOrdersPage {
 		self::process_bulk_actions();
 
 		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'Incomplete Orders Tracker', 'wcorder-blocker' ) . '</h1>';
-		echo '<p class="seb-heading">' . esc_html__( 'Track and analyze abandoned carts and incomplete checkout processes.', 'wcorder-blocker' ) . '</p>';
+		echo '<h1>' . esc_html__( 'Incomplete Orders Tracker', 'ninja-fake-order-blocker' ) . '</h1>';
+		echo '<p class="seb-heading">' . esc_html__( 'Track and analyze abandoned carts and incomplete checkout processes.', 'ninja-fake-order-blocker' ) . '</p>';
 		self::render_summary();
 
 		echo '<div class="incomplete-order-table">';
-		echo '<h2>' . esc_html__( 'Incomplete Orders List', 'wcorder-blocker' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Incomplete Orders List', 'ninja-fake-order-blocker' ) . '</h2>';
 
 		// Prepare the table items
 		$table->prepare_items();
@@ -43,7 +43,7 @@ class FailedOrdersPage {
 		}
 
 		// Search box
-		$table->search_box( __( 'Search Orders', 'wcorder-blocker' ), 'failed-orders' );
+		$table->search_box( __( 'Search Orders', 'ninja-fake-order-blocker' ), 'failed-orders' );
 
 		// Display table
 		$table->display();
@@ -56,7 +56,7 @@ class FailedOrdersPage {
 			'rs_export_csv'
 		);
 		echo '<div class="export-csv">';
-		echo '<a href="' . esc_url( $export_url ) . '" class="button button-secondary export-failed-orderlist">' . esc_html__( '⬇️ Export CSV', 'wcorder-blocker' ) . '</a>';
+		echo '<a href="' . esc_url( $export_url ) . '" class="button button-secondary export-failed-orderlist">' . esc_html__( '⬇️ Export CSV', 'ninja-fake-order-blocker' ) . '</a>';
 		echo '</div>';
 
 		echo '</div>'; // .incomplete-order-table
@@ -70,7 +70,7 @@ class FailedOrdersPage {
 			<script>
 				jQuery(function($) {
 					$(document).on('click', '.rs-delete-link', function(e) {
-						if (!confirm('<?php echo esc_js( __( 'Are you sure you want to delete this record?', 'wcorder-blocker' ) ); ?>')) {
+						if (!confirm('<?php echo esc_js( __( 'Are you sure you want to delete this record?', 'ninja-fake-order-blocker' ) ); ?>')) {
 							e.preventDefault();
 						}
 					});
@@ -111,7 +111,7 @@ class FailedOrdersPage {
 		}
 
 		global $wpdb;
-		$table_name = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+		$table_name = $wpdb->prefix . 'nfob_incomplete_orders';
 		$ids        = array_map( 'absint', $_POST['selected_ids'] );
 
 		if ( ! empty( $ids ) ) {
@@ -123,7 +123,7 @@ class FailedOrdersPage {
 			add_action(
 				'admin_notices',
 				function () {
-					echo '<div class="notice notice-success"><p>' . esc_html__( 'Selected records deleted.', 'wcorder-blocker' ) . '</p></div>';
+					echo '<div class="notice notice-success"><p>' . esc_html__( 'Selected records deleted.', 'ninja-fake-order-blocker' ) . '</p></div>';
 				}
 			);
 		}
@@ -147,7 +147,7 @@ class FailedOrdersPage {
 
 	private static function export_failed_orders_to_csv() {
 		global $wpdb;
-		$table = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+		$table = $wpdb->prefix . 'nfob_incomplete_orders';
 
 		$where  = array();
 		$params = array();
@@ -224,7 +224,7 @@ class FailedOrdersPage {
 	 */
 	private static function render_summary() {
 		global $wpdb;
-		$table = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+		$table = $wpdb->prefix . 'nfob_incomplete_orders';
 
 		$total    = (int) $wpdb->get_var( "SELECT COUNT(*) FROM $table" );
 		$revenue  = (float) $wpdb->get_var( "SELECT SUM(total) FROM $table" );
@@ -234,23 +234,23 @@ class FailedOrdersPage {
 		?>
 		<div class="rs-ob-summary-boxes">
 			<div class="rs-ob-box status-total">
-				<h3><?php esc_html_e( 'Total Incomplete Orders', 'wcorder-blocker' ); ?></h3>
+				<h3><?php esc_html_e( 'Total Incomplete Orders', 'ninja-fake-order-blocker' ); ?></h3>
 				<p><?php echo esc_html( number_format_i18n( $total ) ); ?></p>
 			</div>
 			<div class="rs-ob-box status-revenue">
-				<h3><?php esc_html_e( 'Potential Sales Missed', 'wcorder-blocker' ); ?></h3>
+				<h3><?php esc_html_e( 'Potential Sales Missed', 'ninja-fake-order-blocker' ); ?></h3>
 				<p><?php //echo wc_price($revenue); ?></p>
 			</div>
 			<div class="rs-ob-box status-cart">
-				<h3><?php esc_html_e( 'Cart Abandons', 'wcorder-blocker' ); ?></h3>
+				<h3><?php esc_html_e( 'Cart Abandons', 'ninja-fake-order-blocker' ); ?></h3>
 				<p><?php echo esc_html( number_format_i18n( $cart ) ); ?></p>
 			</div>
 			<div class="rs-ob-box status-checkout">
-				<h3><?php esc_html_e( 'Checkout Abandons', 'wcorder-blocker' ); ?></h3>
+				<h3><?php esc_html_e( 'Checkout Abandons', 'ninja-fake-order-blocker' ); ?></h3>
 				<p><?php echo esc_html( number_format_i18n( $checkout ) ); ?></p>
 			</div>
 			<div class="rs-ob-box status-failed">
-				<h3><?php esc_html_e( 'Payment Failures', 'wcorder-blocker' ); ?></h3>
+				<h3><?php esc_html_e( 'Payment Failures', 'ninja-fake-order-blocker' ); ?></h3>
 				<p><?php echo esc_html( number_format_i18n( $failed ) ); ?></p>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker;
+namespace NinjaFakeOrder;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -12,7 +12,7 @@ class Tracker {
 
     public function __construct() {
         global $wpdb;
-        $this->table = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+        $this->table = $wpdb->prefix . 'nfob_incomplete_orders';
 
         add_action('wp', [$this, 'maybe_track_cart_or_checkout']);
         add_action('wp_enqueue_scripts', [$this, 'get_checkout_info_script']);
@@ -106,7 +106,7 @@ class Tracker {
             'rs-get-checkout-data-js',
             plugin_dir_url(__DIR__) . 'assets/js/incomplete-order-checkout-data.js',
             ['jquery'],
-            RS_ORDER_SHIELD_PRO_VERSION,
+            NFOB_PLUGIN_VERSION,
             true
         );
 

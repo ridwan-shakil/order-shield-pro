@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker;
+namespace NinjaFakeOrder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,80 +15,28 @@ class Assets {
 		add_action( 'wp_enqueue_scripts', array( $this, 'Discount_offer_popup_assets' ) );
 		// Admin Scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'fraud_analetics_page_script' ) );
-		add_action( 'wp_ajax_rs_get_refusal_chart_data', array( $this, 'rs_handle_chart_ajax' ) );
 	}
 
 
 	public function frontend_styles() {
 		// if (!is_checkout()) return;
-		wp_enqueue_style( 'rs-blocker-style', plugin_dir_url( __DIR__ ) . 'assets/css/frontend.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
+		wp_enqueue_style( 'rs-blocker-style', plugin_dir_url( __DIR__ ) . 'assets/css/frontend.css', array(), NFOB_PLUGIN_VERSION );
 
-		wp_enqueue_script( 'rs-order-blocker-script', plugin_dir_url( __DIR__ ) . 'assets/js/frontend.js', array( 'jquery' ), RS_ORDER_SHIELD_PRO_VERSION, true );
+		wp_enqueue_script( 'rs-order-blocker-script', plugin_dir_url( __DIR__ ) . 'assets/js/frontend.js', array( 'jquery' ), NFOB_PLUGIN_VERSION, true );
 	}
 
 	public function admin_styles( $hook ) {
 		// Admin Faild orders page css
 		if ( ! isset( $_GET['page'] ) || $_GET['page'] == 'rs-failed-orders' ) {
-			wp_enqueue_style( 'rs-faild-orders-page-css', plugin_dir_url( __DIR__ ) . 'assets/css/admin-faild-orders-page.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
+			wp_enqueue_style( 'rs-faild-orders-page-css', plugin_dir_url( __DIR__ ) . 'assets/css/admin-faild-orders-page.css', array(), NFOB_PLUGIN_VERSION );
 		}
-
-		// Admin Fraud analetics page > Customer journey tab
-		// if ( ! isset( $_GET['page'] ) || $_GET['page'] == 'rs-fraud-analytics' ) {
-		// 	wp_enqueue_style( 'rs-customer-journey-css', plugin_dir_url( __DIR__ ) . 'assets/css/admin-customer-journey.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
-		// }
 
 		// Admin settings page css
 		if ( strpos( $hook, 'rs-order-blocker' ) === false ) {
 			return;
 		}
-		wp_enqueue_style( 'rs-blocker-admin', plugin_dir_url( __DIR__ ) . 'assets/css/admin-settings.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
+		wp_enqueue_style( 'rs-blocker-admin', plugin_dir_url( __DIR__ ) . 'assets/css/admin-settings.css', array(), NFOB_PLUGIN_VERSION );
 	}
-
-
-	public function fraud_analetics_page_script( $hook ) {
-		if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'rs-fraud-analytics' ) {
-			return;
-		}
-		// custom assets
-		wp_enqueue_style( 'rs-fraud-analetics-css', plugin_dir_url( __DIR__ ) . 'assets/css/admin-fraud-analetics.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
-
-		wp_register_script( 'rs-fraud-analetics-js', plugin_dir_url( __DIR__ ) . 'assets/js/admin-fraud-analetics-page.js', array( 'jquery' ), RS_ORDER_SHIELD_PRO_VERSION, true );
-
-		// map assets cdn link
-		wp_enqueue_style( 'leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
-		wp_enqueue_script( 'leaflet-js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', array(), RS_ORDER_SHIELD_PRO_VERSION, true );
-
-		// Jquery plugin for months selection Filter : Order Refusals graph
-		// wp_enqueue_script('jquery-monthpicker', 'https://cdn.jsdelivr.net/npm/monthpicker@5.0.2/dist/monthpicker.min.js', ['jquery'],  null, true);
-
-		// wp_enqueue_style('jquery-monthpicker-css', 'https://cdn.jsdelivr.net/npm/monthpicker@5.0.2/dist/monthpicker.min.css', [], null);
-	}
-
-
-	// Fraud analetics page : Chart filter Ajax call
-	function rs_handle_chart_ajax() {
-		check_ajax_referer( 'rs_chart_data' );
-
-		$from = sanitize_text_field( $_POST['from'] ?? '' );
-		$to   = sanitize_text_field( $_POST['to'] ?? '' );
-
-		if ( ! $from || ! $to ) {
-			wp_send_json_error( array( 'message' => 'Invalid range' ) );
-		}
-
-		$chart = \RS\OrderBlocker\Admin\FraudAnalyticsPage::get_refusal_chart_data( $from, $to );
-		wp_send_json_success( $chart );
-	}
-
-
-
-
-
-
-
-
-
 
 
 	public function Discount_offer_popup_assets() {
@@ -149,14 +97,14 @@ class Assets {
 				'rs-discount-popup-css',
 				plugin_dir_url( __DIR__ ) . 'assets/css/frontend-discount-popup.css',
 				array(),
-				RS_ORDER_SHIELD_PRO_VERSION
+				NFOB_PLUGIN_VERSION
 			);
 
 			wp_enqueue_script(
 				'rs-discount-popup-js',
 				plugin_dir_url( __DIR__ ) . 'assets/js/frontend-discount-popup.js',
 				array( 'jquery' ),
-				RS_ORDER_SHIELD_PRO_VERSION,
+				NFOB_PLUGIN_VERSION,
 				true
 			);
 

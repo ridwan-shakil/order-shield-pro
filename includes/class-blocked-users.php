@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker;
+namespace NinjaFakeOrder;
 
 if (!defined('ABSPATH')) exit;
 
@@ -69,7 +69,7 @@ class blockedUsers {
             'ip'         => $ip,
             'email'      => $email,
             'mobile'     => $mobile,
-            'reason'     => __('Blocked from order page', 'wcorder-blocker'),
+            'reason'     => __('Blocked from order page', 'ninja-fake-order-blocker'),
             'created_at' => time(),
             'expires_at' => 0,
         ];
@@ -93,14 +93,11 @@ class blockedUsers {
     }
 
 
-
-
-
     public function add_blocked_users_menu() {
         add_submenu_page(
             'rs-order-blocker',
-            __('Blocked List', 'wcorder-blocker'),
-            __('Blocked List', 'wcorder-blocker'),
+            __('Blocked List', 'ninja-fake-order-blocker'),
+            __('Blocked List', 'ninja-fake-order-blocker'),
             'manage_options',
             'rs-blocked-users',
             [$this, 'render_blocked_users_page']
@@ -184,7 +181,7 @@ class blockedUsers {
             $has_error = false;
 
             if (!$mobile && !$email && !$ip) {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Enter mobile, email or IP', 'wcorder-blocker') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Enter mobile, email or IP', 'ninja-fake-order-blocker') . '</p></div>';
                 // return;
             } else {
                 foreach ($list as $existing) {
@@ -193,7 +190,7 @@ class blockedUsers {
                         ($email && $existing['email'] === $email) ||
                         ($ip && $existing['ip'] === $ip)
                     ) {
-                        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('This user is already in the blocked list.', 'wcorder-blocker') . '</p></div>';
+                        echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('This user is already in the blocked list.', 'ninja-fake-order-blocker') . '</p></div>';
                         $has_error = true;
                         break;
                     }
@@ -209,7 +206,7 @@ class blockedUsers {
                         'expires_at' => $expires,
                     ];
                     update_option('rs_ob_blocked_users', $list);
-                    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('User has been blocked! ',  'wcorder-blocker') . '</p></div>';
+                    echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('User has been blocked! ',  'ninja-fake-order-blocker') . '</p></div>';
                 }
             }
         }
@@ -221,7 +218,7 @@ class blockedUsers {
             if (isset($list[$idx])) {
                 unset($list[$idx]);
                 update_option('rs_ob_blocked_users', array_values($list));
-                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Removed from block list.', 'wcorder-blocker') . '</p></div>';
+                echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Removed from block list.', 'ninja-fake-order-blocker') . '</p></div>';
             }
         }
 
@@ -234,7 +231,7 @@ class blockedUsers {
         }
         // // success notice after deliting the blocklist 
         // if (isset($_GET['cleared']) && $_GET['cleared'] == 1) {
-        //     echo '<div class="notice notice-success is-dismissible"><p>' . __('Blocked list cleared.', 'wcorder-blocker') . '</p></div>';
+        //     echo '<div class="notice notice-success is-dismissible"><p>' . __('Blocked list cleared.', 'ninja-fake-order-blocker') . '</p></div>';
         // }
 
 
@@ -252,7 +249,7 @@ class blockedUsers {
 
             <div class="ob_block_any_user">
                 <div class="ob_block_any_user_heading">
-                    <h2><?php esc_html_e('Block a User', 'wcorder-blocker'); ?></h2>
+                    <h2><?php esc_html_e('Block a User', 'ninja-fake-order-blocker'); ?></h2>
                     <p class="total-blocked">
                         ⊘ <?php printf('Total blocked: <strong>%d</strong>', $total); ?>
                     </p>
@@ -263,35 +260,35 @@ class blockedUsers {
                     <?php wp_nonce_field('rs_ob_add_block'); ?>
                     <div class="form-table">
                         <div class="form-left">
-                            <label for="mobile" class="label"> <?php esc_html_e('Mobile', 'wcorder-blocker'); ?> </label>
+                            <label for="mobile" class="label"> <?php esc_html_e('Mobile', 'ninja-fake-order-blocker'); ?> </label>
                             <input name="mobile" type="text" class="regular-text" id="mobile" placeholder="e.g. 01234567890">
 
 
-                            <label for="email" class="label"> <?php esc_html_e('Email', 'wcorder-blocker'); ?> </label>
+                            <label for="email" class="label"> <?php esc_html_e('Email', 'ninja-fake-order-blocker'); ?> </label>
                             <input name="email" type="email" class="regular-text" autocomplete="email" id="email" placeholder="e.g. user@example.com">
 
 
-                            <label for="ip" class="label"> <?php esc_html_e('IP Address', 'wcorder-blocker'); ?> </label>
+                            <label for="ip" class="label"> <?php esc_html_e('IP Address', 'ninja-fake-order-blocker'); ?> </label>
                             <input name="ip" type="text" class="regular-text" id="ip" placeholder="e.g. 192.168.1.1">
                         </div>
 
                         <div class="form-right">
-                            <label for="reason" class="label"> <?php esc_html_e('Reason', 'wcorder-blocker'); ?> </label>
+                            <label for="reason" class="label"> <?php esc_html_e('Reason', 'ninja-fake-order-blocker'); ?> </label>
                             <textarea name="reason" rows="4" class="regular-text" id="reason"></textarea>
 
 
-                            <label for="duration" class="label"> <?php esc_html_e('Duration', 'wcorder-blocker'); ?> </label>
+                            <label for="duration" class="label"> <?php esc_html_e('Duration', 'ninja-fake-order-blocker'); ?> </label>
                             <div style="display: flex;">
                                 <input name="length" type="number" value="0" min="0" class="Ob_duration_input" id="duration">
                                 <select name="unit" class="Ob_block_expire_selector">
-                                    <option value="minutes"><?php esc_html_e('Minutes', 'wcorder-blocker'); ?></option>
-                                    <option value="hours"><?php esc_html_e('Hours', 'wcorder-blocker'); ?></option>
-                                    <option value="days" selected><?php esc_html_e('Days', 'wcorder-blocker'); ?></option>
+                                    <option value="minutes"><?php esc_html_e('Minutes', 'ninja-fake-order-blocker'); ?></option>
+                                    <option value="hours"><?php esc_html_e('Hours', 'ninja-fake-order-blocker'); ?></option>
+                                    <option value="days" selected><?php esc_html_e('Days', 'ninja-fake-order-blocker'); ?></option>
                                 </select>
-                                <p class="description"><?php esc_html_e('Set 0 for permanent block', 'wcorder-blocker'); ?></p>
+                                <p class="description"><?php esc_html_e('Set 0 for permanent block', 'ninja-fake-order-blocker'); ?></p>
                             </div>
 
-                            <p><button class="button button-primary" name="rs_ob_add_block" type="submit">⊘<?php esc_html_e(' Block User', 'wcorder-blocker'); ?></button></p>
+                            <p><button class="button button-primary" name="rs_ob_add_block" type="submit">⊘<?php esc_html_e(' Block User', 'ninja-fake-order-blocker'); ?></button></p>
                         </div>
                     </div>
 
@@ -301,20 +298,20 @@ class blockedUsers {
 
 
             <!-- Blocked list  -->
-            <h2 class="Ob_blocked_list_heading"><?php esc_html_e('Blocked List', 'wcorder-blocker'); ?></h2>
+            <h2 class="Ob_blocked_list_heading"><?php esc_html_e('Blocked List', 'ninja-fake-order-blocker'); ?></h2>
             <div class="rs-blocked-list">
 
                 <table class="widefat striped">
                     <thead>
                         <tr class="Ob_blocked_users_th">
                             <th style="padding-left: 20px;"><?php esc_html_e('SL:', "wcorder-blocke") ?></th>
-                            <th><?php esc_html_e('Mobile', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('Email', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('IP Address', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('Reason', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('Blocked On', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('Expires At', 'wcorder-blocker'); ?></th>
-                            <th><?php esc_html_e('Action', 'wcorder-blocker'); ?></th>
+                            <th><?php esc_html_e('Mobile', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('Email', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('IP Address', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('Reason', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('Blocked On', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('Expires At', 'ninja-fake-order-blocker'); ?></th>
+                            <th><?php esc_html_e('Action', 'ninja-fake-order-blocker'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -344,7 +341,7 @@ class blockedUsers {
                                 <td class="Ob_blocked_expires_at">
                                     <span class="block-expiry" style="background-color: <?= esc_attr($expiry_bg_color); ?>; color: <?= esc_attr($expiry_color); ?>">
                                         <?php
-                                        if ($item['expires_at'] === 0) esc_html_e('∞︎︎ Never', 'wcorder-blocker');
+                                        if ($item['expires_at'] === 0) esc_html_e('∞︎︎ Never', 'ninja-fake-order-blocker');
                                         else echo esc_html(date_i18n(get_option('date_format'), $item['expires_at']));
                                         ?>
                                     </span>
@@ -354,8 +351,8 @@ class blockedUsers {
                                     <form method="post" style="display:inline" class="remove-a-blocked-user">
                                         <?php wp_nonce_field('rs_ob_remove'); ?>
                                         <input type="hidden" name="idx" value="<?= esc_attr($i); ?>">
-                                        <button class="button-link delete" name="rs_ob_remove" type="submit" onclick="return confirm('<?php esc_html_e('Confirm unblocking this user?', 'wcorder-blocker'); ?>')">
-                                            <?php esc_html_e('Remove', 'wcorder-blocker'); ?>
+                                        <button class="button-link delete" name="rs_ob_remove" type="submit" onclick="return confirm('<?php esc_html_e('Confirm unblocking this user?', 'ninja-fake-order-blocker'); ?>')">
+                                            <?php esc_html_e('Remove', 'ninja-fake-order-blocker'); ?>
                                         </button>
                                     </form>
                                 </td>
@@ -363,7 +360,7 @@ class blockedUsers {
                         <?php endforeach; ?>
                         <?php if (empty($list)): ?>
                             <tr>
-                                <td colspan="7"><?= esc_html_e('No blocks yet.', 'wcorder-blocker'); ?></td>
+                                <td colspan="7"><?= esc_html_e('No blocks yet.', 'ninja-fake-order-blocker'); ?></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -371,8 +368,8 @@ class blockedUsers {
                 <!-- Clear Block list Btn -->
                 <form method="post" style="margin-top: 15px;">
                     <?php wp_nonce_field('rs_ob_clear_all'); ?>
-                    <button class="button button-secondary" name="rs_ob_clear_all" onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the entire blocked list?', 'wcorder-blocker'); ?>');">
-                        🧹 <?php esc_html_e('Clear Blocked List', 'wcorder-blocker'); ?>
+                    <button class="button button-secondary" name="rs_ob_clear_all" onclick="return confirm('<?php esc_attr_e('Are you sure you want to clear the entire blocked list?', 'ninja-fake-order-blocker'); ?>');">
+                        🧹 <?php esc_html_e('Clear Blocked List', 'ninja-fake-order-blocker'); ?>
                     </button>
                 </form>
             </div>

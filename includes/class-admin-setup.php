@@ -1,5 +1,5 @@
 <?php
-namespace RS\OrderBlocker;
+namespace NinjaFakeOrder;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -8,19 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Admin_Setup {
 
 	public function __construct() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'admin_notices', array( $this, 'check_woocommerce_dependency' ) );
 		add_action( 'admin_head', array( $this, 'block_default_admin_notices' ) );
 	}
 
-	public function enqueue_admin_assets( $hook ) {
-		$p     = $_GET['page'] ?? '';
-		$files = plugin_dir_url( dirname( __FILE__ ) ) . 'assets/css/';
-		if ( $hook === 'toplevel_page_rs-order-blocker' || in_array( $p, array( 'rs-order-blocker-settings', 'rs-failed-orders', 'rs-blocked-users', 'rs-fraud-analytics' ) ) ) {
-			wp_enqueue_style( 'ob-ui', $files . 'admin-license.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
-			wp_enqueue_style( 'ob-alert', $files . 'admin-license-alert.css', array(), RS_ORDER_SHIELD_PRO_VERSION );
-		}
-	}
+
 
 	public function block_default_admin_notices() {
 		$screen = get_current_screen();

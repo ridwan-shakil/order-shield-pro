@@ -12,5 +12,5 @@ delete_option( 'rs_ob_blocked_users' );
 
 // Deleate incompleate orders table
 global $wpdb;
-$table_name = $wpdb->prefix . 'wc_order_blocker_incomplete_orders';
+$table_name = $wpdb->prefix . 'nfob_incomplete_orders';
 $wpdb->query( "DROP TABLE IF EXISTS {$table_name}" );

@@ -1,6 +1,6 @@
 <?php
 
-namespace RS\OrderBlocker;
+namespace NinjaFakeOrder;
 
 if (! defined('ABSPATH')) {
     exit;
