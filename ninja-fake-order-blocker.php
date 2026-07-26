@@ -29,6 +29,7 @@ define( 'NFOB_PLUGIN_FILE', __FILE__ );
 
 // Load core plugin class
 require_once NFOB_PLUGIN_DIR . 'includes/class-plugin.php';
+require_once NFOB_PLUGIN_DIR . 'includes/class-loader.php';
 
 require_once NFOB_PLUGIN_DIR . 'includes/class-settings.php';
 require_once NFOB_PLUGIN_DIR . 'includes/class-checker.php';
@@ -40,7 +41,6 @@ require_once NFOB_PLUGIN_DIR . 'includes/class-admin-setup.php';
 // load admin classes
 require_once NFOB_PLUGIN_DIR . 'includes/admin/class-failed-orders-table.php';
 require_once NFOB_PLUGIN_DIR . 'includes/admin/class-failed-orders-page.php';
-
 
 
 // Add "Settings" link to plugin action links
@@ -107,7 +107,6 @@ register_activation_hook(
 );
 
 
-
 /**
  * Plugin uninstall hook (optional fallback)
  * Note: This hook won't run if uninstall.php is present.
@@ -118,3 +117,13 @@ function rs_order_blocker_uninstall() {
 	// This function will not execute if uninstall.php exists,
 	// but it's defined here as a fallback.
 }
+
+
+
+add_action(
+	'plugins_loaded',
+	function () {
+		// Load the plugin core
+		NinjaFakeOrder\Plugin::instance();
+	}
+);

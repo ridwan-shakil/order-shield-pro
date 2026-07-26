@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Assets {
 
-	public function __construct() {
+	public function init() {
 		// Frontend scripts
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_styles' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'Discount_offer_popup_assets' ) );
@@ -27,7 +27,7 @@ class Assets {
 
 	public function admin_styles( $hook ) {
 		// Admin Faild orders page css
-		if ( ! isset( $_GET['page'] ) || $_GET['page'] == 'rs-failed-orders' ) {
+		if ( ! isset( $_GET['page'] ) || $_GET['page'] === 'rs-failed-orders' ) {
 			wp_enqueue_style( 'rs-faild-orders-page-css', plugin_dir_url( __DIR__ ) . 'assets/css/admin-faild-orders-page.css', array(), NFOB_PLUGIN_VERSION );
 		}
 

@@ -1,42 +1,79 @@
 <?php
+/**
+ * Main Plugin Singleton.
+ *
+ * @since 1.0.0
+ * @package NinjaFakeOrder
+ */
+
 namespace NinjaFakeOrder;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
-use NinjaFakeOrder\Admin_Setup;
-
+/**
+ * Main Plugin class to create singleton instance.
+ */
 final class Plugin {
 
+	/**
+	 * The single instance of the plugin.
+	 *
+	 * @var Plugin|null
+	 */
+	private static $instance = null;
 
-	public function __construct() {
-		// Initialize the Admin Setup (Extracted Methods)
-		// new Admin_Setup();
-
-		add_action( 'plugins_loaded', array( $this, 'boot_plugin_core' ) );
-		add_action( 'wp_footer', array( '\\NinjaFakeOrder\\Settings', 'render_abandon_popup_offer' ) );
-	}
-
-	public function boot_plugin_core() {
-
-		foreach ( $this->get_core_classes() as $class_name ) {
-			if ( class_exists( $class_name ) ) {
-				new $class_name();
-			}
+	/**
+	 * Get the plugin instance.
+	 *
+	 * @return Plugin
+	 */
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
 		}
 
+		return self::$instance;
 	}
 
-	private function get_core_classes() {
-		return array(
-			'NinjaFakeOrder\\Settings',
-			'NinjaFakeOrder\\Assets',
-			'NinjaFakeOrder\\Checker',
-			'NinjaFakeOrder\\Tracker',
-			'NinjaFakeOrder\\BlockedUsers',
-		);
+	/**
+	 * Plugin constructor.
+	 *
+	 * @return void
+	 */
+	private function __construct() {
+		$this->register_hooks();
 	}
+
+	/**
+	 * Register core hooks.
+	 *
+	 * @return void
+	 */
+	private function register_hooks() {
+		add_action( 'init', array( $this, 'init' ) );
+	}
+
+	/**
+	 * Initialize plugin components.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		$loader = new Loader();
+		$loader->run();
+	}
+
+	/**
+	 * Prevent cloning.
+	 *
+	 * @return void
+	 */
+	private function __clone() {}
+
+	/**
+	 * Prevent unserialization.
+	 *
+	 * @return void
+	 */
+	public function __wakeup() {}
 }
-
-new Plugin();

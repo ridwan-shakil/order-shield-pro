@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Admin_Setup {
 
-	public function __construct() {
+	public function init() {
 		add_action( 'admin_notices', array( $this, 'check_woocommerce_dependency' ) );
 		add_action( 'admin_head', array( $this, 'block_default_admin_notices' ) );
 	}

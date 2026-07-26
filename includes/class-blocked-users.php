@@ -5,7 +5,7 @@ namespace NinjaFakeOrder;
 if (!defined('ABSPATH')) exit;
 
 class blockedUsers {
-    public function __construct() {
+    public function init() {
         add_action('admin_enqueue_scripts', [$this, 'enque_admin_blocked_users_scripts']);
         add_action("admin_menu", [$this, "add_blocked_users_menu"]);
         add_action('woocommerce_checkout_process', [$this, 'stop_checkout_if_blocked_by_admin']);
